@@ -1,0 +1,46 @@
+#Registro de Gasto#
+def recomendacao_de_gastos():
+    def validar_registro_gasto(texto):
+            while True:
+                try:
+                    valor=float(input(texto))
+                    if valor <0:
+                        print("O valor não pode ser negativo. Tente novamente")
+                    else:
+                        return valor
+                except ValueError:
+                    print("Valor inválido. Digite um número válido")
+
+
+    def validar_preferencia(categorias):
+                    while True:
+                        try:
+                            nota= int(input(f"Digite o quanto você deseja gastar com {categorias}, em umas escala de (1-5)"))
+                            if 1<=nota<=5:
+                                return nota
+                            else:
+                                print("Por favor, digite um valor entre 1 e 5")
+                        except ValueError:
+                            print(" Valor inválido. Digite um valor inteiro entre 1 e 5")
+                    
+                
+    def coleta_de_dados():
+                print("================================")
+                print("Informe seus dados financeiros")
+                print("================================")
+
+
+                salario = validar_registro_gasto("Salário mensal: R$ ")
+                fixos = validar_registro_gasto("Gastos com Custos Fixos: R$ ")
+                alimentaçao = validar_registro_gasto("Gastos com Alimentação: R$ ")
+                lazer = validar_registro_gasto("Gastos com Lazer: R$ ")
+                transporte = validar_registro_gasto("Gastos com Transporte: R$ ")
+                preferencias= {
+                "Alimentação": validar_preferencia("Alimentação"), "Lazer": validar_preferencia("Lazer"),"Transporte": validar_preferencia("Transporte")
+                }
+
+                return salario,fixos,{"Alimentação": alimentaçao,"Lazer": lazer, "Transporte": transporte}, preferencias
+    salario, fixos, gastos, preferencias = coleta_de_dados()
+    print("================================================")
+    print("Suas informações foram registradas com sucesso!")
+    print("================================================")
