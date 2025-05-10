@@ -1,3 +1,59 @@
+def criar_metas(salario):
+      while True:
+           valor_meta= float(input("\nQual é o valor total da sua meta? R$"))
+           if valor_meta > salario :
+            print("O valor da meta não pode ser maior que o seu salário! Tente novamente.")
+           elif valor_meta<=0:
+                print("Meta inválida, sua meta não pode ser negativa ou igual 0. Tente novamente")
+    
+           else:
+            break  
+      
+      while True:
+            dias = int(input("\nEm quantos dias você deseja alcançar essa meta? "))
+            if dias <= 0:
+                print("O número de dias deve ser maior que 0. Tente novamente.")
+            else:
+                break  
+     
+      if dias<7:
+        meta_diaria= valor_meta/dias
+        print("=======================(META)=======================\n")
+        print("Você tem uma meta diária!")
+        print(f"Meta total: R${valor_meta:.2f}")
+        print(f"Prazo: {dias} dias")
+        print(f"Meta Diária: R$ {meta_diaria:.2f} por dia")
+        print("\n====================================================")
+
+        return {"Diária":meta_diaria}
+      
+      elif dias <30:
+        meta_diaria= valor_meta/dias
+        meta_semanal= valor_meta/(dias//7)
+        print("=======================(META)=======================\n")
+        print("Você tem uma meta diária e semanal!")
+        print(f"Meta total: R${valor_meta:.2f}")
+        print(f"Prazo: {dias} dias")
+        print(f"Meta Diária: R$ {meta_diaria:.2f} por dia")
+        print(f"Meta Semanal: R$ {meta_semanal:.2f} por semana")
+        print("\n====================================================")
+        return {"Diária":meta_diaria,"Semanal": meta_semanal}
+    
+      else:
+         meta_diaria = valor_meta / dias
+         meta_semanal = meta_diaria *7
+         meta_mensal = meta_diaria*30
+         print("=======================(META)=======================\n")
+         print("Você tem uma meta diária, semanal e mensal!")
+         print(f"Meta total: R${valor_meta:.2f}")
+         print(f"Prazo: {dias} dias")
+         print(f"Meta Diária: R$ {meta_diaria:.2f} por dia")
+         print(f"Meta Semanal: R$ {meta_semanal:.2f} por semana")
+         print(f"Meta Mensal: R$ {meta_mensal:.2f} por mês")
+         print("\n====================================================")
+         return {"Diária": meta_diaria, "Semanal": meta_semanal, "Mensal": meta_mensal}
+        
+
 #Registro de Gasto#
 def recomendacao_de_gastos():
     def validar_registro_gasto(texto):
