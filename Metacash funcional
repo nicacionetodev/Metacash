@@ -65,7 +65,6 @@ def criar_metas(salario):
 
     return resultado
 
-        
 
 #Registro de Gasto#
 def recomendacao_de_gastos():
@@ -113,69 +112,3 @@ def recomendacao_de_gastos():
     print("================================================")
     print("Suas informações foram registradas com sucesso!")
     print("================================================")
-
-def relatar_progresso(valor_meta, progresso_total, dias_restantes,dias):
-    progresso_percentual = (progresso_total / valor_meta) * 100
-    progresso_barras = int(progresso_percentual // 10)  
-
-  
-    barra = "□" * 10 
-    barra = barra[:progresso_barras] + "■" * progresso_barras + barra[progresso_barras:]
-
-    
-    if progresso_percentual >= 50 and progresso_percentual < 75:
-        mensagem_motivacional = "Ótimo trabalho, você está no caminho certo!"
-    elif progresso_percentual >= 75 and progresso_percentual < 100:
-        mensagem_motivacional = "Quase lá! Continue assim!"
-    elif progresso_percentual == 100:
-        mensagem_motivacional = "Meta atingida! Parabéns!"
-    else:
-        mensagem_motivacional = "Continue economizando, você está indo bem!"
-
-    
-    if dias_restantes == dias // 2:
-        aviso_prazo = f"Faltando {dias // 2} dias, não perca o foco!"
-    elif dias_restantes == 1:
-        aviso_prazo = "Falta apenas 1 dia para concluir sua meta! Dê o seu melhor!"
-    else:
-        aviso_prazo = ""
-
-    
-    print("\n=======================(PROGRESSO)=======================")
-    print(f"Meta Total: R$ {valor_meta:.2f}")
-    print(f"Progresso Atual: R$ {progresso_total:.2f} ({progresso_percentual:.2f}%)")
-    print(f"Progresso: {barra}")
-    print(mensagem_motivacional)
-    if aviso_prazo:
-        print(aviso_prazo)
-    print("=========================================================")
-
-
-def registrar_progresso(meta_info, progresso_total, dias_restantes):
-    valor_meta = meta_info[0]  #
-    while dias_restantes > 0:
-        try:
-            progresso_diario = float(input(f"\nQuantos R$ você economizou hoje (restam {dias_restantes} dias)? R$ "))
-            if progresso_diario < 0:
-                print("O valor não pode ser negativo. Tente novamente.")
-                continue
-            
-            progresso_total += progresso_diario
-            dias_restantes -= 1
-
-            
-            relatar_progresso(valor_meta, progresso_total, dias_restantes)
-
-            
-            if progresso_total >= valor_meta:
-                print("\nParabéns! Você atingiu sua meta!")
-                break
-
-        except ValueError:
-            print("Valor inválido. Digite um número válido.")
-
-    
-    if progresso_total < valor_meta:
-        print(f"\nVocê não atingiu sua meta. O prazo acabou! Você economizou R$ {progresso_total:.2f} de R$ {valor_meta:.2f}")
-    else:
-        print("\nMeta alcançada com sucesso!")
