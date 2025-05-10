@@ -1,57 +1,70 @@
+#Registrar meta
+
 def criar_metas(salario):
-      while True:
-           valor_meta= float(input("\nQual é o valor total da sua meta? R$"))
-           if valor_meta > salario :
-            print("O valor da meta não pode ser maior que o seu salário! Tente novamente.")
-           elif valor_meta<=0:
-                print("Meta inválida, sua meta não pode ser negativa ou igual 0. Tente novamente")
-    
-           else:
-            break  
-      
-      while True:
+    while True:
+        
+        try:
+            valor_meta = float(input("\nQual é o valor total da sua meta? R$"))
+            if valor_meta > salario:
+                print("O valor da meta não pode ser maior que o seu salário! Tente novamente.")
+                continue
+            elif valor_meta <= 0:
+                print("Meta inválida, sua meta não pode ser negativa ou igual a 0. Tente novamente.")
+                continue
+        except ValueError:
+            print("Digite um valor numérico válido.")
+            continue
+
+        
+        try:
             dias = int(input("\nEm quantos dias você deseja alcançar essa meta? "))
             if dias <= 0:
                 print("O número de dias deve ser maior que 0. Tente novamente.")
-            else:
-                break  
-     
-      if dias<7:
-        meta_diaria= valor_meta/dias
-        print("=======================(META)=======================\n")
-        print("Você tem uma meta diária!")
-        print(f"Meta total: R${valor_meta:.2f}")
-        print(f"Prazo: {dias} dias")
-        print(f"Meta Diária: R$ {meta_diaria:.2f} por dia")
-        print("\n====================================================")
+                continue
+        except ValueError:
+            print("Digite um número inteiro válido.")
+            continue
 
-        return {"Diária":meta_diaria}
-      
-      elif dias <30:
-        meta_diaria= valor_meta/dias
-        meta_semanal= valor_meta/(dias//7)
-        print("=======================(META)=======================\n")
+        
+        meta_diaria = valor_meta / dias
+        if meta_diaria > salario * 0.35:
+            print("CUIDADO: Sua meta diária é maior que 35% do seu salário. Tente ajustar o valor ou o prazo.")
+            continue
+        else:
+            print("Sua meta parece realista, continue assim!")
+            break  
+
+    
+    print("\n=======================(META)=======================\n")
+
+
+    if dias < 7:
+        print("Você tem uma meta diária!")
+        print(f"Meta Diária: R$ {meta_diaria:.2f} por dia")
+        resultado = {"Diária": meta_diaria}
+
+    elif dias < 30:
+        meta_semanal = valor_meta / (dias // 7)
         print("Você tem uma meta diária e semanal!")
-        print(f"Meta total: R${valor_meta:.2f}")
-        print(f"Prazo: {dias} dias")
         print(f"Meta Diária: R$ {meta_diaria:.2f} por dia")
         print(f"Meta Semanal: R$ {meta_semanal:.2f} por semana")
-        print("\n====================================================")
-        return {"Diária":meta_diaria,"Semanal": meta_semanal}
-    
-      else:
-         meta_diaria = valor_meta / dias
-         meta_semanal = meta_diaria *7
-         meta_mensal = meta_diaria*30
-         print("=======================(META)=======================\n")
-         print("Você tem uma meta diária, semanal e mensal!")
-         print(f"Meta total: R${valor_meta:.2f}")
-         print(f"Prazo: {dias} dias")
-         print(f"Meta Diária: R$ {meta_diaria:.2f} por dia")
-         print(f"Meta Semanal: R$ {meta_semanal:.2f} por semana")
-         print(f"Meta Mensal: R$ {meta_mensal:.2f} por mês")
-         print("\n====================================================")
-         return {"Diária": meta_diaria, "Semanal": meta_semanal, "Mensal": meta_mensal}
+        resultado = {"Diária": meta_diaria, "Semanal": meta_semanal}
+
+    else:
+        meta_semanal = meta_diaria * 7
+        meta_mensal = meta_diaria * 30
+        print("Você tem uma meta diária, semanal e mensal!")
+        print(f"Meta Diária: R$ {meta_diaria:.2f} por dia")
+        print(f"Meta Semanal: R$ {meta_semanal:.2f} por semana")
+        print(f"Meta Mensal: R$ {meta_mensal:.2f} por mês")
+        resultado = {"Diária": meta_diaria, "Semanal": meta_semanal, "Mensal": meta_mensal}
+
+    print(f"\nMeta total: R${valor_meta:.2f}")
+    print(f"Prazo: {dias} dias")
+    print("\n====================================================")
+
+    return resultado
+
         
 
 #Registro de Gasto#
@@ -100,3 +113,69 @@ def recomendacao_de_gastos():
     print("================================================")
     print("Suas informações foram registradas com sucesso!")
     print("================================================")
+
+def relatar_progresso(valor_meta, progresso_total, dias_restantes,dias):
+    progresso_percentual = (progresso_total / valor_meta) * 100
+    progresso_barras = int(progresso_percentual // 10)  
+
+  
+    barra = "□" * 10 
+    barra = barra[:progresso_barras] + "■" * progresso_barras + barra[progresso_barras:]
+
+    
+    if progresso_percentual >= 50 and progresso_percentual < 75:
+        mensagem_motivacional = "Ótimo trabalho, você está no caminho certo!"
+    elif progresso_percentual >= 75 and progresso_percentual < 100:
+        mensagem_motivacional = "Quase lá! Continue assim!"
+    elif progresso_percentual == 100:
+        mensagem_motivacional = "Meta atingida! Parabéns!"
+    else:
+        mensagem_motivacional = "Continue economizando, você está indo bem!"
+
+    
+    if dias_restantes == dias // 2:
+        aviso_prazo = f"Faltando {dias // 2} dias, não perca o foco!"
+    elif dias_restantes == 1:
+        aviso_prazo = "Falta apenas 1 dia para concluir sua meta! Dê o seu melhor!"
+    else:
+        aviso_prazo = ""
+
+    
+    print("\n=======================(PROGRESSO)=======================")
+    print(f"Meta Total: R$ {valor_meta:.2f}")
+    print(f"Progresso Atual: R$ {progresso_total:.2f} ({progresso_percentual:.2f}%)")
+    print(f"Progresso: {barra}")
+    print(mensagem_motivacional)
+    if aviso_prazo:
+        print(aviso_prazo)
+    print("=========================================================")
+
+
+def registrar_progresso(meta_info, progresso_total, dias_restantes):
+    valor_meta = meta_info[0]  #
+    while dias_restantes > 0:
+        try:
+            progresso_diario = float(input(f"\nQuantos R$ você economizou hoje (restam {dias_restantes} dias)? R$ "))
+            if progresso_diario < 0:
+                print("O valor não pode ser negativo. Tente novamente.")
+                continue
+            
+            progresso_total += progresso_diario
+            dias_restantes -= 1
+
+            
+            relatar_progresso(valor_meta, progresso_total, dias_restantes)
+
+            
+            if progresso_total >= valor_meta:
+                print("\nParabéns! Você atingiu sua meta!")
+                break
+
+        except ValueError:
+            print("Valor inválido. Digite um número válido.")
+
+    
+    if progresso_total < valor_meta:
+        print(f"\nVocê não atingiu sua meta. O prazo acabou! Você economizou R$ {progresso_total:.2f} de R$ {valor_meta:.2f}")
+    else:
+        print("\nMeta alcançada com sucesso!")
