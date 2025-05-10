@@ -4,34 +4,38 @@ def criar_metas(salario):
     while True:
         
         try:
-            valor_meta = float(input("\nQual é o valor total da sua meta? R$"))
+            valor_meta = float(input("\n💵-Qual é o valor total da sua meta? R$"))
             if valor_meta > salario:
-                print("O valor da meta não pode ser maior que o seu salário! Tente novamente.")
+                print("❌-O valor da meta não pode ser maior que o seu salário! Tente novamente.")
                 continue
             elif valor_meta <= 0:
-                print("Meta inválida, sua meta não pode ser negativa ou igual a 0. Tente novamente.")
+                print("❌-Meta inválida, sua meta não pode ser negativa ou igual a 0. Tente novamente.")
                 continue
         except ValueError:
-            print("Digite um valor numérico válido.")
+            print("❌-Digite um valor numérico válido.")
             continue
 
         
         try:
-            dias = int(input("\nEm quantos dias você deseja alcançar essa meta? "))
+            dias = int(input("\n⏰-Em quantos dias você deseja alcançar essa meta? "))
             if dias <= 0:
-                print("O número de dias deve ser maior que 0. Tente novamente.")
+                print("❌-O número de dias deve ser maior que 0. Tente novamente.")
                 continue
         except ValueError:
-            print("Digite um número inteiro válido.")
+            print("❌-Digite um número inteiro válido.")
             continue
 
         
         meta_diaria = valor_meta / dias
         if meta_diaria > salario * 0.35:
-            print("CUIDADO: Sua meta diária é maior que 35% do seu salário. Tente ajustar o valor ou o prazo.")
+            print("================================================================================================")
+            print("⚠️CUIDADO: Sua meta diária é maior que 35% do seu salário. Tente ajustar o valor ou o prazo.⚠️")
+            print("================================================================================================")
             continue
         else:
-            print("Sua meta parece realista, continue assim!")
+            print("===============================================")
+            print("✅-Sua meta parece realista, continue assim!👏")
+            print("===============================================")
             break  
 
     
@@ -39,13 +43,13 @@ def criar_metas(salario):
 
 
     if dias < 7:
-        print("Você tem uma meta diária!")
+        print("Você tem uma meta diária!📄")
         print(f"Meta Diária: R$ {meta_diaria:.2f} por dia")
         resultado = {"Diária": meta_diaria}
 
     elif dias < 30:
         meta_semanal = valor_meta / (dias // 7)
-        print("Você tem uma meta diária e semanal!")
+        print("Você tem uma meta diária e semanal!📋")
         print(f"Meta Diária: R$ {meta_diaria:.2f} por dia")
         print(f"Meta Semanal: R$ {meta_semanal:.2f} por semana")
         resultado = {"Diária": meta_diaria, "Semanal": meta_semanal}
@@ -53,7 +57,7 @@ def criar_metas(salario):
     else:
         meta_semanal = meta_diaria * 7
         meta_mensal = meta_diaria * 30
-        print("Você tem uma meta diária, semanal e mensal!")
+        print("Você tem uma meta diária, semanal e mensal!📑")
         print(f"Meta Diária: R$ {meta_diaria:.2f} por dia")
         print(f"Meta Semanal: R$ {meta_semanal:.2f} por semana")
         print(f"Meta Mensal: R$ {meta_mensal:.2f} por mês")
@@ -73,11 +77,11 @@ def recomendacao_de_gastos():
                 try:
                     valor=float(input(texto))
                     if valor <0:
-                        print("O valor não pode ser negativo. Tente novamente")
+                        print("❌-O valor não pode ser negativo. Tente novamente")
                     else:
                         return valor
                 except ValueError:
-                    print("Valor inválido. Digite um número válido")
+                    print("❌-Valor inválido. Digite um número válido")
 
 
     def validar_preferencia(categorias):
@@ -87,9 +91,9 @@ def recomendacao_de_gastos():
                             if 1<=nota<=5:
                                 return nota
                             else:
-                                print("Por favor, digite um valor entre 1 e 5")
+                                print("❌-Por favor, digite um valor entre 1 e 5")
                         except ValueError:
-                            print(" Valor inválido. Digite um valor inteiro entre 1 e 5")
+                            print("❌-Valor inválido. Digite um valor inteiro entre 1 e 5")
                     
                 
     def coleta_de_dados():
@@ -109,6 +113,8 @@ def recomendacao_de_gastos():
 
                 return salario,fixos,{"Alimentação": alimentaçao,"Lazer": lazer, "Transporte": transporte}, preferencias
     salario, fixos, gastos, preferencias = coleta_de_dados()
-    print("================================================")
-    print("Suas informações foram registradas com sucesso!")
-    print("================================================")
+    print("===================================================")
+    print("✅Suas informações foram registradas com sucesso!✅")
+    print("===================================================")
+recomendacao_de_gastos()
+criar_metas(salario=3000)
