@@ -67,7 +67,7 @@ def criar_metas(salario):
     print(f"Prazo: {dias} dias")
     print("\n====================================================")
 
-    return resultado
+    return resultado, valor_meta, dias
 
 
 #Registro de Gasto#
@@ -116,5 +116,44 @@ def recomendacao_de_gastos():
     print("===================================================")
     print("✅Suas informações foram registradas com sucesso!✅")
     print("===================================================")
-recomendacao_de_gastos()
-criar_metas(salario=3000)
+
+def registrar_progresso(meta_info, progresso_total, dias_restantes, valor_meta,salario):
+    print("\n================(PROGRESSO DA META)==================")
+
+    faltando = valor_meta - progresso_total
+    if faltando < 0:
+        faltando = 0
+
+    porcentagem = (progresso_total / valor_meta) * 100
+    meta_diaria = meta_info.get("Diária", 0)
+    progresso_ideal = (meta_diaria * (dias_restantes))
+
+    print(f"Progresso Atual: R$ {progresso_total:.2f}")
+    print(f"Meta Total: R$ {valor_meta:.2f}")
+    print(f"Faltando: R$ {faltando:.2f}")
+    print(f"Porcentagem Concluída: {porcentagem:.1f}%")
+    print(f"Dias Restantes: {dias_restantes} dia(s)")
+
+   
+    if progresso_total > valor_meta:
+        print("Parabéns! Você já atingiu sua meta! 🥳")
+    elif progresso_total >= (valor_meta - progresso_ideal):
+        print("Você está no ritmo certo! Continue assim! ✅")
+    else:
+        print("Atenção! Você está um pouco atrasado com a meta. ⚠️")
+
+    meta_info, valor_meta, dias_restantes = criar_metas(salario)
+    progresso_total = 0
+
+    while dias_restantes > 0:
+        try:
+            economizado = float(input("\n💰-Quanto você conseguiu economizar hoje? R$ "))
+            if economizado < 0:
+                print("❌-Valor inválido! Você não pode economizar um valor negativo.")
+                continue
+            progresso_total += economizado
+            dias_restantes -= 1
+            registrar_progresso(meta_info, progresso_total, dias_restantes, valor_meta)
+        except ValueError:
+            print("❌-Digite um número válido.")
+    print("========================================================")
