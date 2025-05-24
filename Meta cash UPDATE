@@ -635,19 +635,22 @@ def criar_ou_atualizar_meta(arquivo, nome_usuario):
 
     while True:
         try:
-            valor_meta = float(input("Digite o valor total da meta: R$ "))
+            valor_meta = float(input("\n 💵- Digite o valor total da meta: R$ "))
             if valor_meta <= 0 or valor_meta > salario * 10:  # limite arbitrário para evitar erro
                 print("\n======================================")
-                print("Valor da meta inválido, tente novamente.")
+                print(" ❌ Valor da meta irrealita, tente novamente.")
                 print("\n======================================")
                 continue
             break
         except ValueError:
-            print("Digite um valor numérico válido.")
+            print("\n====================================")
+            print("\n ❌Digite um valor numérico válido.")
+            print("\n====================================")
+
 
     while True:
         try:
-            prazo = int(input("Em quantos dias deseja alcançar a meta? "))
+            prazo = int(input("\n 🕰️- Em quantos dias deseja alcançar a meta? "))
             if prazo <= 0:
                 print("\n===============================")
                 print(" ❌ Prazo deve ser maior que zero.")
@@ -691,7 +694,9 @@ def registrar_progresso(arquivo, nome_usuario):
                 continue
             break
         except ValueError:
-            print("Digite um número válido.")
+            print("\n==================================")
+            print(" ❌ Digite um número válido. ❌ ")
+            print("\n==================================")
 
     usuario['progresso'] += valor
     # Reduz o prazo em 1, mas garantindo que não fique negativo
