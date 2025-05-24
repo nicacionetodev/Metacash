@@ -99,7 +99,7 @@ def ver_perfil_usuario(usuario):
                     if usuario_cadastrado == usuario:
                         senha = linhas[i + 1].strip()
                         email = linhas[i + 2].strip()
-                        print("======= Perfil de usuário =======", "\n")
+                        print("======== 👤 Perfil de usuário 👤 ========", "\n")
                         print(f"Usuário: {usuario_cadastrado}")
                         print(f"Senha: {senha}")
                         print(f"Email: {email}", "\n")
@@ -153,6 +153,7 @@ def ja_cadastrado_usuario(usuario):
 
 def login():
     while True:
+        global login_usuario
         login_usuario = input("Digite o seu nome de usuário: ")
         login_senha = input("Digite sua senha: ")
         try:
@@ -224,7 +225,7 @@ def cadastro():
 
 def menu_metacash(usuario):
     while True:
-        print("======= Metacash =======", "\n")
+        print("========== Metacash ==========", "\n")
         print("1 - Coleta de dados ")
         print("2 - Metas ")
         print("3 - Ver perfil de usuário")
@@ -240,7 +241,9 @@ def menu_metacash(usuario):
         elif resposta_menu == "3":
             usuario = ver_perfil_usuario(usuario)
         elif resposta_menu == "4":
-            print("Obrigado por usar o Metacash até logo!")
+            print("\n======================================")
+            print("Obrigado por usar o Metacash até logo!👋")
+            print("\n======================================")
             break
 
         
@@ -305,7 +308,9 @@ def criar_ou_atualizar_meta(arquivo, nome_usuario):
             break
 
     if not usuario_encontrado:
+        print("\n===========================")
         print("❌-Usuário não encontrado!")
+        print("\n===========================")
         return
 
     # Converter salário para float para garantir cálculos corretos
@@ -316,13 +321,19 @@ def criar_ou_atualizar_meta(arquivo, nome_usuario):
         try:
             valor_meta = float(input("\n💵-Qual é o valor total da sua meta? R$"))
             if valor_meta > salario:
+                print("\n=========================================================================")
                 print("❌-O valor da meta não pode ser maior que o seu salário! Tente novamente.")
+                print("\n=========================================================================")
                 continue
             elif valor_meta <= 0:
+                print("\n===============================================================================")
                 print("❌-Meta inválida, sua meta não pode ser negativa ou igual a 0. Tente novamente.")
+                print("\n===============================================================================")
                 continue
         except ValueError:
+            print("\n==================================")
             print("❌-Digite um valor numérico válido.")
+            print("\n==================================")
             continue
         break
 
@@ -387,15 +398,15 @@ def criar_ou_atualizar_meta(arquivo, nome_usuario):
 # Função para consultar metas
 def consultar_metas(arquivo):
     usuarios = carregar_usuarios(arquivo)
-    print("\n=======================(METAS ATUAIS)=======================")
+    print("\n=======================(METAS ATUAIS)=======================\n")
     encontrou = False
     for u in usuarios:
         if u['meta'] and u['prazo']:
             print(f"Nome: {u['nome']} | Meta: R$ {u['meta']} | Prazo: {u['prazo']} dias")
             encontrou = True
     if not encontrou:
-        print("Nenhuma meta cadastrada até o momento.")
-    print("=============================================================\n")
+        print("❌Nenhuma meta cadastrada até o momento.❌")
+    print("\n=============================================================\n")
 
 
 #  Função para cadastrar novo usuário
@@ -406,18 +417,24 @@ def cadastrar_usuario(arquivo):
     # Verifica se o usuário já existe
     for u in usuarios:
         if u['nome'].lower() == nome.lower():
+            print("\n========================")
             print("❌-Usuário já cadastrado.")
+            print("\n========================")
             return
 
     while True:
         try:
             salario = float(input("Digite o salário do usuário: R$"))
             if salario <= 0:
+                print("\n=======================================")
                 print("❌-Salário inválido, tente novamente.")
+                print("\n=======================================")
                 continue
             break
         except ValueError:
+            print("\n==================================")
             print("❌-Digite um valor numérico válido.")
+            print("\n==================================")
 
     usuarios.append({
         'nome': nome,
@@ -427,8 +444,9 @@ def cadastrar_usuario(arquivo):
     })
 
     salvar_usuarios(arquivo, usuarios)
+    print("\n=========================================")
     print(f"✅-Usuário {nome} cadastrado com sucesso!")
-
+    print("\n=========================================")
 
 #Registro de Gasto#
 def validar_registro_gasto(mensagem):
@@ -490,8 +508,8 @@ def coleta_de_dados():
     print("================================")
     print("Informe seus dados financeiros")
     print("================================")
-
-    nome_usuario = input("Digite seu nome de usuário para carregar dados: ")
+    global login_usuario
+    nome_usuario = login_usuario
 
     usuario = None
     senha = None
@@ -510,11 +528,15 @@ def coleta_de_dados():
                     email = e
                     break
     except FileNotFoundError:
+        print("\n=========================================")
         print("⚠️ Arquivo Cadastros.txt não encontrado.")
+        print("\n=========================================")
         return
 
     if usuario is None:
+        print("\n========================================================")
         print(f"⚠️ Usuário '{nome_usuario}' não encontrado no cadastro.")
+        print("\n========================================================")
         return
 
     salario = validar_registro_gasto("Salário mensal: R$ ")
@@ -534,9 +556,9 @@ def coleta_de_dados():
 
     salvar_ou_substituir_usuario(usuario, senha, email, salario, valor_meta, progresso,
                                 alimentacao, lazer, transporte, fixos, preferencias, prazo)
-
+    print("\n================================================")
     print("\n✅ Dados financeiros registrados com sucesso!")
-
+    print("\n================================================")
 
 # Função para carregar usuários do arquivo (necessária para algumas funções acima)
 def carregar_usuarios(arquivo):
@@ -604,8 +626,10 @@ def criar_ou_atualizar_meta(arquivo, nome_usuario):
     usuarios = carregar_usuarios_arquivo(arquivo)
     usuario = encontrar_usuario(usuarios, nome_usuario)
     if not usuario:
-        print("❌ Usuário não encontrado.")
-        return
+       print("\n==========================")
+       print("❌ Usuário não encontrado.")
+       print("\n==========================")
+       return
 
     salario = usuario['salario']
 
@@ -613,7 +637,9 @@ def criar_ou_atualizar_meta(arquivo, nome_usuario):
         try:
             valor_meta = float(input("Digite o valor total da meta: R$ "))
             if valor_meta <= 0 or valor_meta > salario * 10:  # limite arbitrário para evitar erro
+                print("\n======================================")
                 print("Valor da meta inválido, tente novamente.")
+                print("\n======================================")
                 continue
             break
         except ValueError:
@@ -623,34 +649,43 @@ def criar_ou_atualizar_meta(arquivo, nome_usuario):
         try:
             prazo = int(input("Em quantos dias deseja alcançar a meta? "))
             if prazo <= 0:
-                print("Prazo deve ser maior que zero.")
+                print("\n===============================")
+                print(" ❌ Prazo deve ser maior que zero.")
+                print("\n===============================")
                 continue
             break
         except ValueError:
-            print("Digite um número inteiro válido.")
-
+            print("\n===============================")
+            print("❌ Digite um número inteiro válido.")
+            print("\n===============================")
     usuario['valor_meta'] = valor_meta
     usuario['prazo'] = prazo
     usuario['progresso'] = 0  # reseta progresso ao criar/atualizar meta
 
     salvar_usuarios_arquivo(arquivo, usuarios)
+    print("\n=========================================")
     print("✅ Meta e prazo atualizados com sucesso.")
+    print("\n=========================================")
 
 
 def registrar_progresso(arquivo, nome_usuario):
     usuarios = carregar_usuarios_arquivo(arquivo)
     usuario = encontrar_usuario(usuarios, nome_usuario)
     if not usuario:
-        print("❌ Usuário não encontrado.")
+        print("\n===============================")
+        print("❌ Usuário não encontrado. ❌")
+        print("\n===============================")
         return
 
     if usuario['valor_meta'] == 0 or usuario['prazo'] == 0:
-        print("❌ Você precisa criar uma meta antes de registrar progresso.")
+        print("\n===============================================================")
+        print("❌ Você precisa criar uma meta antes de registrar progresso. ❌")
+        print("\n===============================================================")
         return
 
     while True:
         try:
-            valor = float(input("Quanto você economizou agora? R$ "))
+            valor = float(input("Quanto você economizou hoje? R$ "))
             if valor < 0:
                 print("Valor inválido. Não pode ser negativo.")
                 continue
@@ -659,15 +694,23 @@ def registrar_progresso(arquivo, nome_usuario):
             print("Digite um número válido.")
 
     usuario['progresso'] += valor
-    salvar_usuarios_arquivo(arquivo, usuarios)
-    print(f"✅ Progresso atualizado! Total economizado: R$ {usuario['progresso']:.2f}")
+    # Reduz o prazo em 1, mas garantindo que não fique negativo
+    if usuario['prazo'] > 0:
+        usuario['prazo'] -= 1
 
+    salvar_usuarios_arquivo(arquivo, usuarios)
+    print("\n==============================================================")
+    print(f"✅ Progresso atualizado! Total economizado: R$ {usuario['progresso']:.2f}")
+    print(f"⏳ Prazo restante: {usuario['prazo']} dias")
+    print("\n==============================================================")
 
 def ver_progresso(arquivo, nome_usuario):
     usuarios = carregar_usuarios_arquivo(arquivo)
     usuario = encontrar_usuario(usuarios, nome_usuario)
     if not usuario:
-        print("❌ Usuário não encontrado.")
+        print("\n=========================================")
+        print("❌ Usuário não encontrado. Tente novamente")
+        print("=========================================")
         return
 
     valor_meta = usuario['valor_meta']
@@ -675,36 +718,59 @@ def ver_progresso(arquivo, nome_usuario):
     prazo = usuario['prazo']
 
     if valor_meta == 0 or prazo == 0:
-        print("Você ainda não definiu uma meta.")
+        print("\n================================")
+        print("❌ Você ainda não definiu uma meta.")
+        print("================================")
         return
-
-    # Simulando dias_restantes - na prática, precisaria armazenar a data de início para calcular
-    dias_restantes = prazo  # aqui pode melhorar com controle de datas
 
     faltando = max(0, valor_meta - progresso)
     porcentagem = (progresso / valor_meta) * 100 if valor_meta > 0 else 0
-    meta_diaria = valor_meta / prazo
-    progresso_ideal = meta_diaria * (dias_restantes)
+    porcentagem = min(porcentagem, 100)  # Limita no máximo 100%
+
+    dias_restantes = prazo
+
+    # Metas auxiliares
+    meta_diaria = valor_meta / (prazo if prazo != 0 else 1)
+    meta_semanal = meta_diaria * 7
+    meta_mensal = meta_diaria * 30
+
+    # Barra de progresso
+    total_blocos = 10  # Número de blocos visuais
+    blocos_preenchidos = int((porcentagem / 100) * total_blocos)
+    blocos_vazios = total_blocos - blocos_preenchidos
+
+    barra = '●●' * blocos_preenchidos + '○○' * blocos_vazios
 
     print("\n================(PROGRESSO DA META)==================")
-    print(f"Progresso Atual: R$ {progresso:.2f}")
-    print(f"Meta Total: R$ {valor_meta:.2f}")
-    print(f"Faltando: R$ {faltando:.2f}")
-    print(f"Porcentagem Concluída: {porcentagem:.1f}%")
-    print(f"Dias Restantes: {dias_restantes} dia(s)")
+    print(f"🎯 Meta Total:           R$ {valor_meta:.2f}")
+    print(f"💰 Progresso Atual:      R$ {progresso:.2f}")
+    print(f"📉 Faltando:             R$ {faltando:.2f}")
+    print(f"📅 Dias Restantes:       {dias_restantes} dia(s)")
 
+    print(f"\n🗓️  Meta Diária:         R$ {meta_diaria:.2f}")
+    print(f"📆 Meta Semanal:         R$ {meta_semanal:.2f}")
+    print(f"🗓️  Meta Mensal:         R$ {meta_mensal:.2f}")
+
+    print("\n==========", f"({porcentagem:.0f}%)".center(10), "==========")
+    print(f" {barra}")
+    print("\n===============================================")
+
+    # Feedback ao usuário
     if progresso >= valor_meta:
-        print("🎉 Parabéns! Você já atingiu sua meta! 🥳")
-    elif progresso >= (valor_meta - progresso_ideal):
-        print("✅ Você está no ritmo certo! Continue assim!")
+        print("\n🎉 Parabéns! Você já atingiu sua meta! 🥳")
+    elif dias_restantes <= 0 and progresso < valor_meta:
+        print("\n⚠️ Prazo encerrado e a meta não foi alcançada.")
+    elif progresso >= (valor_meta - (meta_diaria * dias_restantes)):
+        print("\n✅ Você está no ritmo certo! Continue assim!")
     else:
-        print("⚠️ Atenção! Você está um pouco atrasado com a meta.")
+        print("\n⚠️ Atenção! Você está um pouco atrasado com a meta.")
 
 
 def menu_metas():
+    global login_usuario
     arquivo = "usuarios.txt"
-    print("=== MENU DE METAS E PROGRESSO ===")
-    nome_usuario = input("Digite seu nome de usuário: ").strip()
+    print("======== MENU DE METAS ========")
+    nome_usuario = login_usuario
 
     while True:
         print("\nEscolha uma opção:")
@@ -712,8 +778,8 @@ def menu_metas():
         print("2 - Registrar Progresso")
         print("3 - Ver Progresso")
         print("4 - Sair")
-
-        opcao = input("Opção: ").strip()
+        print("\n===========================")
+        opcao = input("\nOpção: ").strip()
 
         if opcao == '1':
             criar_ou_atualizar_meta(arquivo, nome_usuario)
@@ -725,8 +791,9 @@ def menu_metas():
             print("Saindo...")
             break
         else:
-            print("Opção inválida. Tente novamente.")
-
+            print("\n=====================================")
+            print("❌ Opção inválida. Tente novamente. ❌")
+            print("\n=====================================")
 
         if __name__ == "__main__":
             menu_metas()
