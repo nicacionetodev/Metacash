@@ -3,65 +3,117 @@ import os
 
 def alterar_dados_cadastro(usuario):
     try:
-        with open ("Cadastros.txt", "r", encoding = 'cp1252' ) as f:
+        with open("Cadastros.txt", "r", encoding='cp1252') as f:
             linhas = f.readlines()
+
         alterado = False
+        usuario_antigo = usuario
+        novo_usuario = None
+        nova_senha = None
+        novo_email = None
+
         for i in range(0, len(linhas), 4):
             if linhas[i].strip() == usuario:
                 print("============================================")
-                print("qual informação você deseja alterar?")
-                print("1 - nome de usuário")
-                print("2 - senha")
-                print("3 - email", "\n")
+                print("Qual informação você deseja alterar?")
+                print("1 - Nome de usuário")
+                print("2 - Senha")
+                print("3 - Email\n")
                 resposta = input("Digite o número correspondente: ")
+
                 if resposta == "1":
                     while True:
-                        novo_usuario = input("Digite seu novo nome de usuário: ")
+                        novo_usuario = input("Digite seu novo nome de usuário: ").strip()
                         if ja_cadastrado_usuario(novo_usuario):
-                            print("❌ Nome de usuário ja existe")
+                            print("❌ Nome de usuário já existe.")
                         else:
                             linhas[i] = novo_usuario + "\n"
                             usuario = novo_usuario
                             break
-                elif resposta =="2":
-                    nova_senha = input("Digite a sua nova senha ela precisa ter letras e números e no mínimo 8 caracters: ")
+
+                elif resposta == "2":
+                    nova_senha = input("Digite sua nova senha (mínimo 8 caracteres, letras e números): ").strip()
                     if len(nova_senha) < 8:
-                        print ("❌ A senha precisa ter no mínimo 8 caracteres", "\n")
+                        print("❌ A senha precisa ter no mínimo 8 caracteres.\n")
                         return usuario
                     elif not any(char.isalpha() for char in nova_senha):
-                        print ("❌ A senha deve ter no mínimo uma letra", "\n")
+                        print("❌ A senha deve conter pelo menos uma letra.\n")
                         return usuario
                     elif not any(char.isdigit() for char in nova_senha):
-                        print ("❌ A senha precisa ter pelo menos um número", "\n")
+                        print("❌ A senha deve conter pelo menos um número.\n")
                         return usuario
                     else:
-                        print("✅ Senha válida", "\n")
-                        linhas [i + 1] = nova_senha + "\n"
+                        print("✅ Senha válida.\n")
+                        linhas[i + 1] = nova_senha + "\n"
+
                 elif resposta == "3":
-                    novo_email = input("Digite o seu novo email: ")
-                    if not novo_email.endswith(("@gmail.com", "@hotmail.com", "yahoo.com.br", "outlook.com")):
-                        print("❌ Domínio inválido.")
+                    novo_email = input("Digite seu novo email: ").strip()
+                    if not novo_email.endswith(("@gmail.com", "@hotmail.com", "@yahoo.com.br", "@outlook.com")):
+                        print("❌ Domínio inválido.\n")
                         return usuario
                     if ja_cadastrado_email(novo_email):
-                        print("❌ Email já está sendo usado")
+                        print("❌ Este email já está sendo usado.\n")
                         return usuario
                     linhas[i + 2] = novo_email + "\n"
+
                 else:
-                    print("❌ resposta inválida")
+                    print("❌ Resposta inválida.\n")
+                    return usuario
+
                 alterado = True
                 break
+
         if alterado:
-            with open ("Cadastros.txt", "w", encoding = 'cp1252') as f:
+            with open("Cadastros.txt", "w", encoding='cp1252') as f:
                 f.writelines(linhas)
-                print("✅ Dados alterados com sucesso")
+
+            # Atualiza também no usuarios.txt
+            atualizar_dados_no_txt(usuario_antigo, usuario_novo=novo_usuario, nova_senha=nova_senha, novo_email=novo_email)
+
+            print("✅ Dados alterados com sucesso!\n")
+            global login_usuario
+            login_usuario = usuario
         else:
-            print("❌ Usuário não encontrado")
+            print("❌ Usuário não encontrado.\n")
+
         return usuario
+
     except FileNotFoundError:
-        print("❌ Arquivo não encontrado.")
+        print("❌ Arquivo Cadastros.txt não encontrado.\n")
         return usuario
+    
 
+def atualizar_dados_no_txt(usuario_antigo, usuario_novo=None, nova_senha=None, novo_email=None):
+    try:
+        with open("usuarios.txt", "r", encoding='cp1252') as f:
+            linhas = f.readlines()
+    except FileNotFoundError:
+        print("❌ Arquivo usuarios.txt não encontrado.")
+        return
 
+    novas_linhas = []
+
+    for linha in linhas:
+        dados = linha.strip().split(':')
+
+        if dados[0] == usuario_antigo:
+            if usuario_novo:
+                dados[0] = usuario_novo
+            if nova_senha:
+                dados[1] = nova_senha
+            if novo_email:
+                dados[2] = novo_email
+
+            nova_linha = ":".join(dados) + "\n"
+            novas_linhas.append(nova_linha)
+        else:
+            novas_linhas.append(linha)
+
+    with open("usuarios.txt", "w", encoding='cp1252') as f:
+        f.writelines(novas_linhas)
+
+    print("🔄 Dados atualizados no usuarios.txt")
+    
 def deletar_conta(usuario):
     resposta = input("Você realmente deseja deletar a sua conta? (S/N) ")
     if resposta.upper() == "S":
@@ -503,13 +555,12 @@ def salvar_ou_substituir_usuario(usuario, senha, email, salario, valor_meta, pro
     with open("usuarios.txt", "w") as f:
         f.writelines(novas_linhas)
 
-
 def coleta_de_dados():
+    global login_usuario  # garante que estamos usando o usuário logado
+
     print("================================")
     print("Informe seus dados financeiros")
     print("================================")
-    global login_usuario
-    nome_usuario = login_usuario
 
     usuario = None
     senha = None
@@ -522,11 +573,13 @@ def coleta_de_dados():
                 u = linhas[i].strip()
                 s = linhas[i+1].strip()
                 e = linhas[i+2].strip()
-                if u == nome_usuario:
+
+                if u == login_usuario:  # ✅ usa login_usuario corretamente
                     usuario = u
                     senha = s
                     email = e
                     break
+
     except FileNotFoundError:
         print("\n=========================================")
         print("⚠️ Arquivo Cadastros.txt não encontrado.")
@@ -535,31 +588,37 @@ def coleta_de_dados():
 
     if usuario is None:
         print("\n========================================================")
-        print(f"⚠️ Usuário '{nome_usuario}' não encontrado no cadastro.")
+        print(f"⚠️ Usuário '{login_usuario}' não encontrado no cadastro.")
         print("\n========================================================")
         return
 
+    # Coleta de dados financeiros
     salario = validar_registro_gasto("Salário mensal: R$ ")
     fixos = validar_registro_gasto("Gastos com Custos Fixos: R$ ")
     alimentacao = validar_registro_gasto("Gastos com Alimentação: R$ ")
     lazer = validar_registro_gasto("Gastos com Lazer: R$ ")
     transporte = validar_registro_gasto("Gastos com Transporte: R$ ")
 
+    # Preferências financeiras
     preferencias = {}
     preferencias['Alimentação'] = validar_preferencia("Alimentação")
     preferencias['Lazer'] = validar_preferencia("Lazer")
     preferencias['Transporte'] = validar_preferencia("Transporte")
 
+    # Dados da meta inicial
     valor_meta = 0
     progresso = 0
     prazo = 0
 
-    salvar_ou_substituir_usuario(usuario, senha, email, salario, valor_meta, progresso,
-                                alimentacao, lazer, transporte, fixos, preferencias, prazo)
-    print("\n================================================")
-    print("\n✅ Dados financeiros registrados com sucesso!")
-    print("\n================================================")
+    # Salvar dados no arquivo
+    salvar_ou_substituir_usuario(
+        usuario, senha, email, salario, valor_meta, progresso,
+        alimentacao, lazer, transporte, fixos, preferencias, prazo
+    )
 
+    print("\n================================================")
+    print("✅ Dados financeiros registrados com sucesso!")
+    print("================================================\n")
 # Função para carregar usuários do arquivo (necessária para algumas funções acima)
 def carregar_usuarios(arquivo):
     usuarios = []
@@ -757,7 +816,7 @@ def ver_progresso(arquivo, nome_usuario):
     print(f"🗓️  Meta Mensal:         R$ {meta_mensal:.2f}")
 
     print("\n==========", f"({porcentagem:.0f}%)".center(10), "==========")
-    print(f" {barra}")
+    print(f"    {barra}")
     print("\n===============================================")
 
     # Feedback ao usuário
@@ -770,12 +829,11 @@ def ver_progresso(arquivo, nome_usuario):
     else:
         print("\n⚠️ Atenção! Você está um pouco atrasado com a meta.")
 
-
 def menu_metas():
     global login_usuario
     arquivo = "usuarios.txt"
     print("======== MENU DE METAS ========")
-    nome_usuario = login_usuario
+    nome_usuario = login_usuario 
 
     while True:
         print("\nEscolha uma opção:")
@@ -794,13 +852,11 @@ def menu_metas():
             ver_progresso(arquivo, nome_usuario)
         elif opcao == '4':
             print("Saindo...")
-            break
+            menu_metacash()
+            break  # <-- Importante: precisa ter break para não ficar em loop infinito
+
         else:
             print("\n=====================================")
             print("❌ Opção inválida. Tente novamente. ❌")
             print("\n=====================================")
-
-        if __name__ == "__main__":
-            menu_metas()
-
 central_do_site()
